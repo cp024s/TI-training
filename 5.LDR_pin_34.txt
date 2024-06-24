@@ -1,0 +1,13 @@
+void setup()
+{ 
+  pinMode(34,INPUT);
+  Serial.begin(9600);
+  }
+
+void loop()
+{
+  int  Analog_value;
+  Analog_value = analogRead(34);
+  Serial.println(Analog_value);
+  delay(1000);  
+}

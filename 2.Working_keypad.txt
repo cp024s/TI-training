@@ -1,0 +1,90 @@
+void setup()
+{
+  pinMode(32,INPUT);
+  pinMode(33,INPUT);
+  pinMode(14,INPUT);
+  
+  pinMode(25,OUTPUT);
+  pinMode(26,OUTPUT);
+  pinMode(27,OUTPUT);
+  digitalWrite(25,LOW);
+  digitalWrite(26,LOW);
+  digitalWrite(27,LOW); 
+ 
+  Serial.begin(38400);
+}
+/*
+void loop()
+{
+  digitalWrite(25,HIGH);
+  digitalWrite(26,HIGH);
+  digitalWrite(27,HIGH); 
+ 
+}
+*/
+
+
+void loop()
+{
+  //Serial.print("@");
+//ROW ONE HIGH //DECODER SET AT 00//READ COLOUMNS   
+digitalWrite(25,HIGH);
+digitalWrite(26,LOW);
+digitalWrite(27,LOW);
+
+if(digitalRead(32)==HIGH)
+{
+  Serial.println("1");//disp('1');
+}
+  if(digitalRead(33)==HIGH)
+{
+  Serial.println("2");//disp('2');
+}
+   if(digitalRead(14)==HIGH)
+{
+  Serial.println("3");//disp('3');
+}
+  
+  
+//ROW TWO HIGH //DECODER SET AT 10//READ COLOUMNS   
+digitalWrite(25,LOW);
+digitalWrite(26,HIGH);
+digitalWrite(27,LOW);
+  
+
+if(digitalRead(32)==HIGH)
+{
+  Serial.println("4");//disp('4');
+}
+  if(digitalRead(33)==HIGH)
+{
+  Serial.println("5");//disp('5');
+}
+   if(digitalRead(14)==HIGH)
+{
+  Serial.println("6");//disp('6');
+}
+ 
+
+  //ROW THREE HIGH //DECODER SET AT 01//READ COLOUMNS   
+digitalWrite(25,LOW);
+digitalWrite(26,LOW);
+digitalWrite(27,HIGH);
+  
+if(digitalRead(32)==HIGH)
+{  
+  Serial.println("7");//disp('7');
+}
+
+  if(digitalRead(33)==HIGH)
+{
+  Serial.println("8");//disp('8');
+}
+   if(digitalRead(14)==HIGH)
+{
+  Serial.println("9");//disp('9');
+}
+
+delay(250);
+}
+

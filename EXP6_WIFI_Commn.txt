@@ -1,0 +1,33 @@
+#include <WiFi.h>
+   
+const char* ssid = "Abhinaav";// Replace your SSID
+const char* password =  "12345678";// Replace with your Password
+   
+void WiFiStationGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+ 
+    Serial.println(WiFi.localIP());
+ 
+    Serial.print(ip4_addr1(&(info.got_ip.ip_info.ip)));
+    Serial.print(".");  
+    Serial.print(ip4_addr2(&(info.got_ip.ip_info.ip)));
+    Serial.print(".");  
+    Serial.print(ip4_addr3(&(info.got_ip.ip_info.ip)));
+    Serial.print(".");  
+    Serial.print(ip4_addr4(&(info.got_ip.ip_info.ip)));
+ 
+    Serial.println();
+    Serial.println(IPAddress(info.got_ip.ip_info.ip.addr));
+} 
+   
+void setup()
+{
+    Serial.begin(115200);
+   
+    WiFi.onEvent(WiFiStationGotIP, SYSTEM_EVENT_STA_GOT_IP);
+       
+    WiFi.begin(ssid, password);
+   
+}
+   
+void loop(){}	

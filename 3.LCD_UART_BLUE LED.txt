@@ -1,0 +1,30 @@
+#include <LiquidCrystal.h> 
+const int rs =17, en = 16, d4 = 4,d5 = 13, d6 = 27, d7 = 23;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+void setup() 
+{
+ 
+  lcd.begin(16, 2);
+  lcd.clear();
+  delay(100);
+  lcd.clear();
+  delay(100);
+  lcd.print("God");
+  Serial.begin(38400);
+ // lcd.print("Hello World");
+}
+void loop()
+{
+ if (Serial.available())
+ {
+   delay(100);
+   lcd.clear();
+   while (Serial.available() > 0)
+   lcd.write(Serial.read());
+ }
+ 
+  digitalWrite(27,LOW);
+  delay(500);
+  digitalWrite(27,HIGH);
+  delay(500);
+}

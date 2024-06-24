@@ -1,0 +1,86 @@
+
+#include <SPI.h>
+#include <AIR430BoostETSI.h>
+
+#define IDENTITY 0x02 // indicates node address
+unsigned char rxData[3] = { '0','0', '\0' };
+void setup()
+{
+ 
+  /* Motor Pin Initialization */
+ pinMode(54,OUTPUT); //DIR R
+pinMode(70,OUTPUT); //DIR L
+pinMode(32,OUTPUT); //PWM R
+pinMode(31,OUTPUT); //PWM L
+pinMode(55,OUTPUT); //nSLP R
+pinMode(71,OUTPUT); //nSLP L
+  Radio.begin(IDENTITY, CHANNEL_1, POWER_MAX);
+}
+
+void loop()
+{
+if (Radio.receiverOn(rxData, sizeof(rxData), 1000) > 0)
+  { 
+ if (rxData[1]=='A')
+ Forward(25,25);
+ 
+ if (rxData[1]=='B')
+ Right(25,25);
+
+ if (rxData[1]=='C')
+ Reverse(25,25);
+ 
+ if (rxData[1]=='D')
+ Left(25,25);
+ 
+   }  
+}
+
+void Forward(int i,int j) // First Argument is PWM for Right and Second 
+                          //Argument is PWM for Left
+{
+ digitalWrite(55,HIGH);   //SLP R
+ digitalWrite(54,LOW);    // DIR R
+  
+ digitalWrite(71,HIGH);   //SLP L
+ digitalWrite(70,LOW);    //DIR L
+  
+ analogWrite(31,j);       // PWM L
+ analogWrite(32,i);       //PWM R
+}
+
+void Right(int i,int j)
+{
+ digitalWrite(55,HIGH);   //SLP R
+ digitalWrite(54,HIGH);   // DIR R
+  
+ digitalWrite(71,HIGH);   //SLP L
+ digitalWrite(70,LOW);    //DIR L
+  
+ analogWrite(31,j);       // PWM L
+ analogWrite(32,i);       //PWM R
+}
+
+void Reverse(int i,int j)  
+{
+  digitalWrite(55,HIGH);   //SLP R
+  digitalWrite(54,HIGH);   // DIR R
+  
+  digitalWrite(71,HIGH);   //SLP L
+  digitalWrite(70,HIGH);   //DIR L
+  
+  analogWrite(31,j);       // PWM L
+  analogWrite(32,i);       //PWM R
+}
+
+void Left(int i,int j)  
+{
+  digitalWrite(55,HIGH);  //SLP R
+  digitalWrite(54,LOW);   // DIR R
+  
+  digitalWrite(71,HIGH);   //SLP L
+  digitalWrite(70,HIGH);   //DIR L
+  
+  analogWrite(31,j);       // PWM L
+  analogWrite(32,i);       //PWM R
+}

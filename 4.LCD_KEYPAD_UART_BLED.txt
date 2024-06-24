@@ -1,0 +1,161 @@
+#include <LiquidCrystal.h> 
+const int rs =17, en = 16, d4 = 4,d5 = 13, d6 = 27, d7 = 23;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+ 
+
+char inKey;  // Character received from Serial input
+uint8_t Cursor = 0;  // Position of cursor, 0 is top left, (rows*columns)-1 is bottom right
+uint8_t rows = 2;  // Number rows, will be either 2 or 4
+uint8_t columns = 16; // Number of columns, will be 16 or 20
+uint8_t characters; // rows * columns
+
+void setup()
+{
+  pinMode(32,INPUT);
+  pinMode(33,INPUT);
+  pinMode(14,INPUT);
+  
+  pinMode(25,OUTPUT);
+  pinMode(26,OUTPUT);
+  pinMode(27,OUTPUT);
+  digitalWrite(25,LOW);
+  digitalWrite(26,LOW);
+  digitalWrite(27,LOW); 
+  
+  lcd.begin(16, 2);
+  lcd.clear();
+  delay(100);
+  lcd.clear();
+  delay(100);
+  lcd.print("God");
+  Cursor = 0;   
+  lcd.cursor();
+  lcd.blink();
+  // initialize the serial communications:
+  Serial.begin(38400);
+  
+}
+
+void loop()
+{
+  // when characters arrive over the serial port...
+  if (Serial.available()) 
+   {
+    // wait a bit for the entire message to arrive
+    delay(100);
+    // clear the screen
+    lcd.clear();
+    Cursor = 0;
+    // read all the available characters
+    while (Serial.available() > 0) 
+     {
+      // display each character to the LCD
+      inKey = Serial.read();
+      LCDDisplay(inKey);
+     }
+   }
+    scan_key();
+  digitalWrite(27,LOW);
+  delay(100);
+  digitalWrite(27,HIGH);
+  delay(100);
+  
+}
+
+void LCDDisplay(char character)
+{
+  int currentRow = 0;
+  characters = rows * columns;
+ 
+  // If Cursor is beyond screen size, get it right
+  while (Cursor >= characters)
+    Cursor -= characters;
+  while (Cursor < 0)
+    Cursor += characters;
+ 
+  if (Cursor >= columns)
+    currentRow = Cursor/columns;
+   
+  lcd.setCursor(Cursor%columns, currentRow);
+  lcd.write(character);
+ 
+  Cursor++;
+}
+void scan_key()
+{
+ unsigned char key = 0;
+ //ROW ONE SCAN 
+ digitalWrite(25,HIGH);
+ digitalWrite(26,LOW);
+ digitalWrite(27,LOW);
+
+ if(digitalRead(32)==HIGH)
+ {
+  key = '1';
+  Serial.print("1");   
+  LCDDisplay(key);
+ }
+  if(digitalRead(33)==HIGH)
+ {
+   key = '2';
+  Serial.print("2");  
+  LCDDisplay(key);
+ }
+   if(digitalRead(14)==HIGH)
+ {
+   key = '3';
+   Serial.print("3");  
+  LCDDisplay(key);
+ }
+ 
+//ROW TWO SCAN
+digitalWrite(25,LOW);
+digitalWrite(26,HIGH);
+digitalWrite(27,LOW);
+
+if(digitalRead(32)==HIGH)
+{
+   key = '4';
+  Serial.print("4");   
+  LCDDisplay(key);
+}
+  if(digitalRead(33)==HIGH)
+{
+    key = '5';
+ Serial.print("5");   
+  LCDDisplay(key);
+}
+   if(digitalRead(14)==HIGH)
+{
+     key = '6';
+  Serial.print("6");    
+  LCDDisplay(key);
+}
+
+  //ROW THREE SCAN 
+digitalWrite(25,LOW);
+digitalWrite(26,LOW);
+digitalWrite(27,HIGH);
+  
+if(digitalRead(32)==HIGH)
+{  
+     key = '7';
+  Serial.print("7");  
+  LCDDisplay(key);
+}
+
+  if(digitalRead(33)==HIGH)
+{
+    key = '8';
+   Serial.print("8");   
+  LCDDisplay(key);
+}
+   if(digitalRead(14)==HIGH)
+{
+     key = '9';
+   Serial.print("9");   
+  LCDDisplay(key);
+}
+
+//delay(250);
+}

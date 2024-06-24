@@ -1,0 +1,28 @@
+
+int bs1,bs2,bs3,bs4,bs5,bs6;
+
+void setup()
+{
+pinMode(42,INPUT_PULLUP);
+pinMode(59,INPUT_PULLUP);
+pinMode(45,INPUT_PULLUP);
+pinMode(62,INPUT_PULLUP);
+pinMode(49,INPUT_PULLUP);
+pinMode(66,INPUT_PULLUP);
+Serial.begin(115200);
+  
+}
+
+void loop()
+{
+  bs1=digitalRead(42);
+  bs2=digitalRead(59);
+  bs3=digitalRead(45);
+  bs4=digitalRead(62);
+  bs5=digitalRead(49);
+  bs6=digitalRead(66);
+if(bs1==0 || bs2==0 ||bs3==0 ||bs4==0 ||bs5==0 ||bs6==0)
+  {
+Serial.println(" BUMP Activated..");}
+  
+}

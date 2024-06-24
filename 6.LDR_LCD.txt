@@ -1,0 +1,20 @@
+#include <LiquidCrystal.h> 
+const int rs =17, en = 16, d4 = 4,d5 = 13, d6 = 27, d7 = 23;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+void setup()
+{ 
+  pinMode(34,INPUT);
+  Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.clear();
+  }
+
+void loop()
+{
+  int  Analog_value;
+  Analog_value = analogRead(34);
+  Serial.println(Analog_value);
+  lcd.setCursor(0,0);
+  lcd.print(Analog_value);
+  delay(1000);  
+}

@@ -1,0 +1,23 @@
+void setup()
+{ 
+  pinMode(27,OUTPUT);    ///BLUE LED
+  pinMode(26,OUTPUT);    ///RED LED
+  pinMode(25,OUTPUT);    ///GREEN LED
+  }
+
+void loop()
+{
+  digitalWrite(27,HIGH);
+  delay(1000);
+  digitalWrite(27,LOW);
+  delay(1000);
+  digitalWrite(26,HIGH);
+  delay(1000);
+  digitalWrite(26,LOW);
+  delay(1000);
+  digitalWrite(25,HIGH);
+  delay(1000);
+  digitalWrite(25,LOW);
+  delay(1000);
+  
+}

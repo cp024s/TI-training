@@ -1,0 +1,78 @@
+    int bs1,bs2,bs3,bs4,bs5,bs6;
+
+
+    void setup()
+    {
+  
+        /* MOTOR CONNECTION INITIALIZATION*/
+      pinMode(54,OUTPUT); //DIR R
+      pinMode(70,OUTPUT); //DIR L
+      pinMode(32,OUTPUT); //PWM R
+      pinMode(31,OUTPUT); //PWM L
+      pinMode(55,OUTPUT); //nSLP R
+      pinMode(71,OUTPUT); //nSLP L
+        /* Motor initialization complete*/
+      
+      
+        /* BUMP SWITCH INITIALIZATION */
+      
+      pinMode(42,INPUT_PULLUP);
+      pinMode(59,INPUT_PULLUP);
+      pinMode(45,INPUT_PULLUP);
+      pinMode(62,INPUT_PULLUP);
+      pinMode(49,INPUT_PULLUP);
+      pinMode(66,INPUT_PULLUP);
+        /* Bump Switch Initialization Complete*/
+      }
+
+          void loop()
+          {
+            bs1=digitalRead(42);
+            bs2=digitalRead(59);
+            bs3=digitalRead(45);
+            bs4=digitalRead(62);
+            bs5=digitalRead(49);
+            bs6=digitalRead(66);
+          
+          if(bs1==0)
+              {Forward(20,20);}
+          
+              if(bs2==0)
+              {Reverse(20,20);}
+          
+             if(bs3==0)
+              {Forward(20,0);Forward(20,20);}
+            if(bs4==0)
+              {Forward(0,20); Forward(20,20);}
+            if(bs5==0)
+              {Forward(0,0);}
+                    
+          }
+          
+          
+          
+          void Reverse(int i,int j)  // First Argument is PWM for Right and Second Argument is PWM for Left
+          {
+          digitalWrite(55,HIGH);//SLP R
+          digitalWrite(54,HIGH); // DIR R
+          
+          digitalWrite(71,HIGH);//SLP L
+          digitalWrite(70,HIGH); //DIR L
+          
+          analogWrite(31,j); // PWM L
+          analogWrite(32,i); //PWM R
+          }
+          
+          void Forward(int i,int j) // First Argument is PWM for Right and Second Argument is PWM for Left
+          {
+          digitalWrite(55,HIGH);//SLP R
+          digitalWrite(54,LOW); // DIR R
+          
+          digitalWrite(71,HIGH);//SLP L
+          digitalWrite(70,LOW); //DIR L
+          
+          analogWrite(31,j); // PWM L
+          analogWrite(32,i); //PWM R
+          }
+
+

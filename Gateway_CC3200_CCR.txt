@@ -1,0 +1,143 @@
+#ifndef __CC3200R1M1RGC__
+#include <SPI.h>
+#endif
+#include <WiFi.h>
+#include <WifiIPStack.h>
+#include <Countdown.h>
+#include <MQTTClient.h>
+#include <AIR430BoostETSI.h>
+#define IDENTITY 0x02
+unsigned char act[3] = { IDENTITY,'0','\0' };
+char ssid[] = "Home4G";// variable declared for Router SSID which will provide the internet on wifi
+char password[] = "abhianu123@";// variable declared for Router password
+char temp1[1];char temp2[1];char temp3[1];char temp4[1];// Global variable declared used for MQTT subscribe subroutine function
+int Actuator1;// Global variable declared
+char printbuf[100];
+const char* topic1 = "act1";// Variable for MQTT Subscribe Topic for Actuator1
+const char* topic2 = "act2";// Variable for MQTT Subscribe Topic for Actuator2
+const char* topic3 = "act3";// Variable for MQTT Subscribe Topic for Actuator3
+const char* topic4 = "act4";// Variable for MQTT Subscribe Topic for Actuator3
+
+WifiIPStack ipstack;// using CC3200 built in wifi TCP IP stack lib
+MQTT::Client<WifiIPStack, Countdown> client = MQTT::Client<WifiIPStack, Countdown>(ipstack);
+
+void connect()// user function defined here for establisghing connection with MQTT Server
+{
+  char hostname[] = "broker.hivemq.com";// Cloud server address used for MQTT application:
+  int port = 1883;// Port used to establish the connection with server
+  Serial.print("Connecting to: ");
+  Serial.print(hostname);
+  Serial.println(port);
+  int rc = ipstack.connect(hostname, port);// for connecting to host server for MQTT Appln
+  Serial.println("MQTT connecting");
+  MQTTPacket_connectData data = MQTTPacket_connectData_initializer;       
+  data.MQTTVersion = 3;
+  data.clientID.cstring = (char*)"Steps_demo";
+  rc = client.connect(data);
+  if (rc != 0)
+  {
+    sprintf(printbuf, "rc from MQTT connect is %d\n", rc);
+    Serial.print(printbuf);
+  }
+  Serial.println("MQTT connected");
+   }
+void messagefrombutton1(MQTT::MessageData& md)// user function defined here for MQTT subscribe sub Routine 
+{
+  MQTT::Message &message = md.message;
+  sprintf(temp1, (char*)message.payload);// To extract the actual data (pay load) from the message
+  if(temp1[0]=='0')
+  {
+   act[1]='S';
+  }
+  else if(temp1[0]=='1')
+  {
+  act[1]='F';}
+  Radio.begin(0x02, CHANNEL_1, POWER_MAX);
+  delay(10);
+  Radio.transmit(0x03, act,3);
+  Radio.end(); 
+}
+void messagefrombutton2(MQTT::MessageData& md)// user function defined here for MQTT subscribe sub Routine 
+{
+  MQTT::Message &message = md.message;
+  sprintf(temp2, (char*)message.payload);// To extract the actual data (pay load) from the message
+  if(temp2[0]=='0')
+  {act[1]='S';}
+  else if(temp2[0]=='1')
+  {act[1]='R';}
+   Radio.begin(0x02, CHANNEL_1, POWER_MAX);
+  delay(10);
+  Radio.transmit(0x03, act,3);
+  Radio.end(); 
+}
+void messagefrombutton3(MQTT::MessageData& md)// user function defined here for MQTT subscribe sub Routine 
+{
+  MQTT::Message &message = md.message;
+  sprintf(temp3, (char*)message.payload);// To extract the actual data (pay load) from the message
+  if(temp3[0]=='0')
+  {act[1]='S';}
+  else if(temp3[0]=='1')
+  {act[1]='L';}
+  Radio.begin(0x02, CHANNEL_1, POWER_MAX);
+  delay(10);
+  Radio.transmit(0x03, act,3);
+  Radio.end();
+  }
+void messagefrombutton4(MQTT::MessageData& md)// user function defined here for MQTT subscribe sub Routine 
+{
+  MQTT::Message &message = md.message;
+  sprintf(temp4, (char*)message.payload);// To extract the actual data (pay load) from the message
+  if(temp4[0]=='0')
+  {act[1]='S';}
+  else if(temp4[0]=='1')
+  {act[1]='Q';}
+  Radio.begin(0x02, CHANNEL_1, POWER_MAX);
+  delay(10);
+  Radio.transmit(0x03, act,3);
+  Radio.end();
+  }
+void setup() 
+{
+  Serial.begin(115200);//Serial  services are initialized here
+  Serial.print("Initiating connection to the Router: ");
+  Serial.println(ssid); 
+  WiFi.begin(ssid, password);// To connect to the router with the credentials
+  while ( WiFi.status() != WL_CONNECTED)// while loop to indicate the status until gets connected 
+  {
+    Serial.print(".");// print dots until connection is established,once connected comes out of the loop
+    delay(300);
+  }
+  Serial.println("Waiting for an ip address");// waiting for the IP from the router
+  while (WiFi.localIP() == INADDR_NONE) //while loop to indicate the status until obtaining IP
+  {
+    Serial.print(".");// print dots until IP is obtained,once IP is alloted,comes out of the loop
+    delay(300);
+  }
+
+  Serial.println("\nIP Address obtained");
+  printWifiStatus();
+    connect();// will call the user function defined above to connect to MQTT Server
+}
+void loop() 
+{  if (!client.isConnected())
+    connect();
+  MQTT::Message message;
+  client.subscribe(topic1,MQTT::QOS0,messagefrombutton1);
+  client.subscribe(topic2,MQTT::QOS0,messagefrombutton2);
+  client.subscribe(topic3,MQTT::QOS0,messagefrombutton3);
+  client.subscribe(topic4,MQTT::QOS0,messagefrombutton4);
+}
+ 
+  
+
+
+
+void printWifiStatus() {
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+  long rssi = WiFi.RSSI();// For printing the received signal strength:
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+}
